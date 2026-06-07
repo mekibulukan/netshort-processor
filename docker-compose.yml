@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  netshort-worker:
+    build: .
+    container_name: netshort-worker
+    environment:
+      - R2_ACCOUNT_ID=${R2_ACCOUNT_ID}
+      - R2_ACCESS_KEY=${R2_ACCESS_KEY}
+      - R2_SECRET_KEY=${R2_SECRET_KEY}
+      - R2_BUCKET=${R2_BUCKET}
+      - R2_PUBLIC_URL=${R2_PUBLIC_URL}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+    volumes:
+      - worker_downloads:/app/downloads
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.netshort-worker.rule=Host(`worker.ewepedia.cloud`)"
+      - "traefik.http.routers.netshort-worker.entrypoints=websecure"
+      - "traefik.http.routers.netshort-worker.tls.certresolver=letsencrypt"
+      - "traefik.http.services.netshort-worker.loadbalancer.server.port=5000"
+    restart: always
+    networks:
+      - traefik-public
+
+volumes:
+  worker_downloads:
+
+networks:
+  traefik-public:
+    external: true
