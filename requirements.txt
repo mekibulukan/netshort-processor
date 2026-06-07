@@ -1,0 +1,5 @@
+flask
+requests
+boto3
+redis
+python-dotenv
